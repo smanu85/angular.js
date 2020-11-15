@@ -1,7 +1,6 @@
 #!/bin/bash
 
 # Tags a release
-# so that travis can do the actual release.
 
 echo "#################################"
 echo "## Tag angular.js for a release #"
@@ -17,7 +16,7 @@ ARG_DEFS=(
 )
 
 function checkVersionNumber() {
-  BRANCH_PATTERN=$(readJsonProp "package.json" "branchVersion")
+  BRANCH_PATTERN=$(readJsonProp "package.json" "branchPattern")
   if [[ $VERSION_NUMBER != $BRANCH_PATTERN ]]; then
     echo "version-number needs to match $BRANCH_PATTERN on this branch"
     usage

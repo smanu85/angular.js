@@ -7,6 +7,7 @@ ngRouteModule.provider('$routeParams', $RouteParamsProvider);
  * @ngdoc service
  * @name $routeParams
  * @requires $route
+ * @this
  *
  * @description
  * The `$routeParams` service allows you to retrieve the current set of route parameters.
@@ -33,7 +34,7 @@ ngRouteModule.provider('$routeParams', $RouteParamsProvider);
  *  // Route: /Chapter/:chapterId/Section/:sectionId
  *  //
  *  // Then
- *  $routeParams ==> {chapterId:1, sectionId:2, search:'moby'}
+ *  $routeParams ==> {chapterId:'1', sectionId:'2', search:'moby'}
  * ```
  */
 function $RouteParamsProvider() {

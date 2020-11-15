@@ -1,15 +1,48 @@
-angular.module('versions', [])
+'use strict';
+/* global console */
 
-.controller('DocsVersionsCtrl', ['$scope', '$location', '$window', 'NG_VERSIONS', function($scope, $location, $window, NG_VERSIONS) {
-  $scope.docs_versions = NG_VERSIONS;
-  $scope.docs_version  = NG_VERSIONS[0];
+angular.module('versions', ['currentVersionData', 'allVersionsData'])
 
-  $scope.jumpToDocsVersion = function(version) {
-    var currentPagePath = $location.path();
+.directive('versionPicker', function() {
+  return {
+    restrict: 'E',
+    scope: true,
+    controllerAs: '$ctrl',
+    controller: ['$location', '$window', 'CURRENT_NG_VERSION', 'ALL_NG_VERSIONS',
+            /** @this VersionPickerController */
+            function VersionPickerController($location, $window, CURRENT_NG_VERSION, ALL_NG_VERSIONS) {
 
-    // TODO: We need to do some munging of the path for different versions of the API...
-    
+      var versionStr = CURRENT_NG_VERSION.version;
 
-    $window.location = version.docsUrl + currentPagePath;
+      if (CURRENT_NG_VERSION.isSnapshot) {
+        versionStr = CURRENT_NG_VERSION.distTag === 'latest' ? 'snapshot-stable' : 'snapshot';
+      }
+
+      this.versions  = ALL_NG_VERSIONS;
+      this.selectedVersion = find(ALL_NG_VERSIONS, function(value) {
+        return value.version.version === versionStr;
+      });
+
+      this.jumpToDocsVersion = function(value) {
+        var currentPagePath = $location.path().replace(/\/$/, '');
+        $window.location = value.docsUrl + currentPagePath;
+      };
+    }],
+    template:
+      '<div class="picker version-picker">' +
+      '  <select ng-options="v as v.label group by v.group for v in $ctrl.versions"' +
+      '          ng-model="$ctrl.selectedVersion"' +
+      '          ng-change="$ctrl.jumpToDocsVersion($ctrl.selectedVersion)"' +
+      '          class="docs-version-jump">' +
+      '  </select>' +
+      '</div>'
   };
-}]);
+
+  function find(collection, matcherFn) {
+    for (var i = 0, ii = collection.length; i < ii; ++i) {
+      if (matcherFn(collection[i])) {
+        return collection[i];
+      }
+    }
+  }
+});

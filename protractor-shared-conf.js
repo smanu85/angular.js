@@ -1,16 +1,25 @@
+'use strict';
+
 exports.config = {
   allScriptsTimeout: 11000,
 
-  baseUrl: 'http://localhost:8000/build/docs/',
+  baseUrl: 'http://localhost:8000/',
 
-  framework: 'jasmine',
+  framework: 'jasmine2',
+
+  capabilities: {
+    // Fix element scrolling behavior in Firefox for fixed header elements (like angularjs.org has)
+    'elementScrollBehavior': 1
+  },
 
   onPrepare: function() {
+    /* global angular: false, browser: false, jasmine: false */
+
     // Disable animations so e2e tests run more quickly
     var disableNgAnimate = function() {
-      angular.module('disableNgAnimate', []).run(function($animate) {
+      angular.module('disableNgAnimate', []).run(['$animate', function($animate) {
         $animate.enabled(false);
-      });
+      }]);
     };
 
     browser.addMockModule('disableNgAnimate', disableNgAnimate);
@@ -22,6 +31,7 @@ exports.config = {
   },
 
   jasmineNodeOpts: {
-    defaultTimeoutInterval: 30000
+    defaultTimeoutInterval: 60000,
+    showTiming: true
   }
 };

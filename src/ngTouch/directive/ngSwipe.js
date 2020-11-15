@@ -6,11 +6,19 @@
  * @ngdoc directive
  * @name ngSwipeLeft
  *
+ * @deprecated
+ * sinceVersion="1.7.0"
+ *
+ * See the {@link ngTouch module} documentation for more information.
+ *
  * @description
  * Specify custom behavior when an element is swiped to the left on a touchscreen device.
  * A leftward swipe is a quick, right-to-left slide of the finger.
  * Though ngSwipeLeft is designed for touch-based devices, it will work with a mouse click and drag
  * too.
+ *
+ * To disable the mouse click and drag functionality, add `ng-swipe-disable-mouse` to
+ * the `ng-swipe-left` or `ng-swipe-right` DOM Element.
  *
  * Requires the {@link ngTouch `ngTouch`} module to be installed.
  *
@@ -19,7 +27,7 @@
  * upon left swipe. (Event object is available as `$event`)
  *
  * @example
-    <example module="ngSwipeLeftExample" deps="angular-touch.js">
+    <example module="ngSwipeLeftExample" deps="angular-touch.js" name="ng-swipe-left">
       <file name="index.html">
         <div ng-show="!showActions" ng-swipe-left="showActions = true">
           Some list content, like an email in the inbox
@@ -39,6 +47,11 @@
  * @ngdoc directive
  * @name ngSwipeRight
  *
+ * @deprecated
+ * sinceVersion="1.7.0"
+ *
+ * See the {@link ngTouch module} documentation for more information.
+ *
  * @description
  * Specify custom behavior when an element is swiped to the right on a touchscreen device.
  * A rightward swipe is a quick, left-to-right slide of the finger.
@@ -52,7 +65,7 @@
  * upon right swipe. (Event object is available as `$event`)
  *
  * @example
-    <example module="ngSwipeRightExample" deps="angular-touch.js">
+    <example module="ngSwipeRightExample" deps="angular-touch.js" name="ng-swipe-right">
       <file name="index.html">
         <div ng-show="!showActions" ng-swipe-left="showActions = true">
           Some list content, like an email in the inbox
@@ -101,6 +114,10 @@ function makeSwipeDirective(directiveName, direction, eventName) {
             deltaY / deltaX < MAX_VERTICAL_RATIO;
       }
 
+      var pointerTypes = ['touch'];
+      if (!angular.isDefined(attr['ngSwipeDisableMouse'])) {
+        pointerTypes.push('mouse');
+      }
       $swipe.bind(element, {
         'start': function(coords, event) {
           startCoords = coords;
@@ -117,7 +134,7 @@ function makeSwipeDirective(directiveName, direction, eventName) {
             });
           }
         }
-      });
+      }, pointerTypes);
     };
   }]);
 }
